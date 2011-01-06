@@ -68,9 +68,22 @@ module ICuke
       def build_configuration
         @launch_options[:build_configuration] || DEFAULT_CONFIGURATION
       end
+
+      def symroot
+        return @symroot if @symroot
+
+        m = `defaults read com.apple.Xcode PBXApplicationwideBuildSettings`.match(/"?SYMROOT"?\s*=\s*(?:"([^"]*)"|([^"\s]+))/)
+        if m && !m[1].match(/\$/)
+          @symroot = m[1] 
+        else
+          @symroot = "#{File.dirname(@project_file)}/build"
+        end
+
+        @symroot
+      end
       
       def directory
-        "#{File.dirname(@project_file)}/build/#{build_configuration}-iphonesimulator"
+        "#{symroot}/#{build_configuration}-iphonesimulator"
       end
     end
   end

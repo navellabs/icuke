@@ -4,18 +4,20 @@ require 'cucumber/step_mother'
 require 'icuke/cucumber'
 require 'icuke/simulate'
 
-
 describe ICukeWorld do
 
   before(:each) do
     @simulator = []
     @simulator.stub(:view)
     @simulator.stub(:fire_event)
-    ICuke::Simulator.should_receive(:new).and_return(@simulator)
-    @cuke_world = ICukeWorld.new
+    @cuke_world = ICuke::SimulatorDriver.new @simulator, ICuke::Configuration.new({
+      :build_configuration => 'Debug'
+    })
     @cuke_world.stub!(:sleep)
+
     xml = File.read('spec/fixtures/controls_page.xml')
     @cuke_world.stub(:response).and_return(xml)
+
   end
 
   context "when performing a swipe" do

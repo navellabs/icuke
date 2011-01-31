@@ -13,6 +13,12 @@ module ICuke
           'CFFIXED_USER_HOME' => Dir.mktmpdir
         }
       })
+
+      process.setup_commands.each do |cmd|
+        fail "Unable to run setup command #{cmd}" if !system(cmd)
+        fail "Setup command #{cmd} failed with exit status #{$?}" if $? != 0
+      end
+
       @simulator = BackgroundProcess.run(process.command)
       self.current_process = process
 
@@ -54,12 +60,36 @@ module ICuke
       def with_options(options = {})
         self.class.new(@project_file, options.merge(@launch_options))
       end
+
+      def setup_commands
+        cmds = []
+        cmds << simulate_device_command if @launch_options.has_key?(:retina)
+        cmds
+      end
       
       def command
         ICuke::SDK.launch("#{directory}/#{target}.app", @launch_options[:platform], @launch_options[:env])
       end
       
       private
+
+      def simulate_device_command
+        "defaults write com.apple.iphonesimulator SimulateDevice '\"#{simulate_device}\"'"
+      end
+
+      def simulate_device
+        case @launch_options[:platform]
+        when :ipad
+          "iPad"
+        else
+          "iPhone"
+        end +
+        if @launch_options[:retina]
+          " (Retina)"
+        else
+          ""
+        end
+      end
       
       def target
         @launch_options[:target] || File.basename(@project_file, '.xcodeproj')

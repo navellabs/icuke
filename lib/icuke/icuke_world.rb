@@ -19,7 +19,7 @@ After do
   icuke_driver.quit
 end
 
-Given /^(?:"([^\"]*)" from )?"([^\"]*)"(?: with build configuration "([^\"]*)")? is loaded in the (?:(iphone|ipad) )?simulator(?: with SDK ([0-9.]+))?$/ do |target, project, configuration, platform, sdk_version|
+Given /^(?:"([^\"]*)" from )?"([^\"]*)"(?: with build configuration "([^\"]*)")? is loaded in the (?:(retina|non-retina) )?(?:(iphone|ipad) )?simulator(?: with SDK ([0-9.]+))?$/ do |target, project, configuration, retina, platform, sdk_version|
   if sdk_version
     ICuke::SDK.use(sdk_version)
   elsif platform
@@ -33,6 +33,7 @@ Given /^(?:"([^\"]*)" from )?"([^\"]*)"(?: with build configuration "([^\"]*)")?
               'DYLD_INSERT_LIBRARIES' => ICuke::SDK.dylib_fullpath
             }
           }
+  attrs.merge!(:retina => !(retina =~ /non/)) if retina
   attrs.merge!(:build_configuration => configuration) if configuration
   icuke_driver.launch(File.expand_path(project), attrs)
 end

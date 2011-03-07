@@ -59,7 +59,7 @@ rescue
   end
 end
 
-task :default => :features
+task :default => [:spec, :features]
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|

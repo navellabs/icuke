@@ -16,14 +16,14 @@ Gem::Specification.new do |s|
   s.extensions = ["ext/Rakefile"]
   s.extra_rdoc_files = [
     "LICENSE",
-    "README.rdoc"
+    "README.markdown"
   ]
   s.files = [
     ".gitignore",
     ".gitmodules",
     "History.txt",
     "LICENSE",
-    "README.rdoc",
+    "README.markdown",
     "Rakefile",
     "VERSION",
     "app/.gitignore",
